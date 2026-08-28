@@ -5,7 +5,7 @@
 Use small MATLAB helper functions for repeated CST geometry primitives. Helpers should either call CST COM objects directly or assemble a VBA history block and call:
 
 ```matlab
-invoke(mws, "AddToHistory", "history label", sCommand);
+invoke(mws, 'AddToHistory', 'history label', sCommand);
 ```
 
 History blocks make the CST project inspectable in `Model/3D/Model.mod` and easier to debug than a long sequence of direct object calls with no CST history entry.
@@ -14,21 +14,20 @@ History blocks make the CST project inspectable in `Model/3D/Model.mod` and easi
 
 ```matlab
 function defineUnits(mws, geometryUnit, frequencyUnit, timeUnit, temperatureUnit)
-s = "";
-s = s + "With Units" + newline;
-s = s + ".Geometry """ + geometryUnit + """" + newline;
-s = s + ".Frequency """ + frequencyUnit + """" + newline;
-s = s + ".Time """ + timeUnit + """" + newline;
-s = s + ".TemperatureUnit """ + temperatureUnit + """" + newline;
-s = s + "End With";
-invoke(mws, "AddToHistory", "define units", char(s));
+s = sprintf(['With Units\n' ...
+    '.Geometry "%s"\n' ...
+    '.Frequency "%s"\n' ...
+    '.Time "%s"\n' ...
+    '.TemperatureUnit "%s"\n' ...
+    'End With'], geometryUnit, frequencyUnit, timeUnit, temperatureUnit);
+invoke(mws, 'AddToHistory', 'define units', s);
 end
 ```
 
 ```matlab
 function defineFrequencyRange(mws, fmin, fmax)
-s = sprintf("Solver.FrequencyRange ""%g"", ""%g""", fmin, fmax);
-invoke(mws, "AddToHistory", "define frequency range", s);
+s = sprintf('Solver.FrequencyRange "%g", "%g"', fmin, fmax);
+invoke(mws, 'AddToHistory', 'define frequency range', s);
 end
 ```
 
@@ -36,18 +35,17 @@ end
 
 ```matlab
 function addBrick(mws, name, component, material, xrange, yrange, zrange)
-s = "";
-s = s + "With Brick" + newline;
-s = s + ".Reset" + newline;
-s = s + ".Name """ + name + """" + newline;
-s = s + ".Component """ + component + """" + newline;
-s = s + ".Material """ + material + """" + newline;
-s = s + sprintf(".Xrange ""%g"", ""%g""\n", xrange(1), xrange(2));
-s = s + sprintf(".Yrange ""%g"", ""%g""\n", yrange(1), yrange(2));
-s = s + sprintf(".Zrange ""%g"", ""%g""\n", zrange(1), zrange(2));
-s = s + ".Create" + newline;
-s = s + "End With";
-invoke(mws, "AddToHistory", "define brick: " + component + ":" + name, char(s));
+s = sprintf(['With Brick\n' ...
+    '.Reset\n' ...
+    '.Name "%s"\n' ...
+    '.Component "%s"\n' ...
+    '.Material "%s"\n' ...
+    '.Xrange "%g", "%g"\n' ...
+    '.Yrange "%g", "%g"\n' ...
+    '.Zrange "%g", "%g"\n' ...
+    '.Create\n' ...
+    'End With'], name, component, material, xrange(1), xrange(2), yrange(1), yrange(2), zrange(1), zrange(2));
+invoke(mws, 'AddToHistory', sprintf('define brick: %s:%s', component, name), s);
 end
 ```
 
@@ -57,18 +55,17 @@ Rotate around a specified center:
 
 ```matlab
 function rotateShape(mws, fullName, center, angleDeg)
-s = "";
-s = s + "With Transform" + newline;
-s = s + ".Reset" + newline;
-s = s + ".Name """ + fullName + """" + newline;
-s = s + ".Origin ""Free""" + newline;
-s = s + sprintf(".Center ""%g"", ""%g"", ""%g""\n", center(1), center(2), center(3));
-s = s + sprintf(".Angle ""%g"", ""%g"", ""%g""\n", angleDeg(1), angleDeg(2), angleDeg(3));
-s = s + ".MultipleObjects ""False""" + newline;
-s = s + ".Repetitions ""1""" + newline;
-s = s + ".Transform ""Shape"", ""Rotate""" + newline;
-s = s + "End With";
-invoke(mws, "AddToHistory", "rotate shape: " + fullName, char(s));
+s = sprintf(['With Transform\n' ...
+    '.Reset\n' ...
+    '.Name "%s"\n' ...
+    '.Origin "Free"\n' ...
+    '.Center "%g", "%g", "%g"\n' ...
+    '.Angle "%g", "%g", "%g"\n' ...
+    '.MultipleObjects "False"\n' ...
+    '.Repetitions "1"\n' ...
+    '.Transform "Shape", "Rotate"\n' ...
+    'End With'], fullName, center(1), center(2), center(3), angleDeg(1), angleDeg(2), angleDeg(3));
+invoke(mws, 'AddToHistory', sprintf('rotate shape: %s', fullName), s);
 end
 ```
 

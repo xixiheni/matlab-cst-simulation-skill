@@ -1,18 +1,19 @@
 ---
 name: matlab-cst-simulation
-description: Automate CST Studio Suite from MATLAB for electromagnetic simulation workflows. Use when creating or editing MATLAB scripts that drive CST through COM/ActiveX or generated VBA history commands, including building CST projects, editing parameters, defining units/materials/boundaries/excitations/monitors, running solvers, exporting S-parameters or fields, checking CST logs, or post-processing CST results. Do not use for pure MATLAB analysis with no CST automation.
+description: Automate CST Studio Suite from MATLAB for electromagnetic simulation workflows. Use when creating or editing version-adaptive MATLAB scripts that drive CST through COM/ActiveX or generated VBA history commands, including building CST projects, editing parameters, defining units/materials/boundaries/excitations/monitors, running solvers, exporting S-parameters or fields, checking CST logs, or post-processing CST results. Do not use for pure MATLAB analysis with no CST automation.
 ---
 
 # MATLAB CST Simulation
 
 ## Overview
 
-Use this skill to make MATLAB-driven CST work repeatable: create or open `.cst` projects, define simulation setup, run solvers, export results, and verify the generated CST artifacts. Prefer scripts over GUI-only steps so the workflow can be rerun by Codex, Claude Code, Copilot agents, or a human from the command line.
+Use this skill to make MATLAB-driven CST work repeatable across different installations: create or open `.cst` projects, define simulation setup, run solvers, export results, and verify the generated CST artifacts. Prefer scripts over GUI-only steps so the workflow can be rerun by Codex, Claude Code, Copilot agents, or a human from the command line.
 
 ## First Choices
 
 - For a new CST model, generate a MATLAB build script that creates the project with `actxserver('CSTStudio.Application')`, `NewMWS`, and CST history commands.
 - For an existing CST project, use MATLAB to open the `.cst`, inspect/change parameters, run the solver, and export results.
+- For unknown MATLAB or CST versions, generate conservative code that probes capabilities first, uses stable COM/VBA history patterns, and reports any fallback instead of assuming a specific release. Read [references/version-compatibility.md](references/version-compatibility.md).
 - For result reading and parameter sweeps, prefer a maintained MATLAB-CST interface class when the project already has results. Read [references/tcstinterface.md](references/tcstinterface.md).
 - For geometry construction, use small MATLAB helper functions that wrap CST objects or `AddToHistory` commands. Read [references/geometry-vba-patterns.md](references/geometry-vba-patterns.md).
 - For excitation, monitors, solver setup, and export commands, write explicit CST VBA history blocks from MATLAB. Read [references/simulation-setup.md](references/simulation-setup.md).
@@ -20,7 +21,7 @@ Use this skill to make MATLAB-driven CST work repeatable: create or open `.cst` 
 
 ## Core Workflow
 
-1. Establish the environment: confirm Windows, MATLAB, CST Studio Suite, CST COM registration, writable output directory, and expected CST version.
+1. Establish the environment: confirm Windows, MATLAB, CST Studio Suite, CST COM registration, writable output directory, and expected CST version. When the versions are unknown, include a small diagnostic/probe step before generating version-sensitive commands.
 2. Keep sources and outputs separate. Copy templates or examples into a new output/work directory before modifying them.
 3. Generate a build script for the `.cst` project. Include units, frequency range, solver type, background, boundaries, materials, geometry, excitation, and monitors.
 4. Save the CST project under a new, descriptive filename. Avoid overwriting an open `.cst`.
@@ -40,23 +41,23 @@ Use this as the minimal shape for new scripts, adapting names and setup:
 clc;
 clear;
 
-outputDir = fullfile(pwd, "cst-output");
-if ~exist(outputDir, "dir")
+outputDir = fullfile(pwd, 'cst-output');
+if ~exist(outputDir, 'dir')
     mkdir(outputDir);
 end
 
-cst = actxserver("CSTStudio.Application");
-mws = invoke(cst, "NewMWS");
+cst = actxserver('CSTStudio.Application');
+mws = invoke(cst, 'NewMWS');
 
-invoke(mws, "AddToHistory", "select solver", "ChangeSolverType ""HF Time Domain""");
+invoke(mws, 'AddToHistory', 'select solver', 'ChangeSolverType "HF Time Domain"');
 
 % Add project setup and geometry here.
 % Prefer helper functions for repeated geometry, and raw VBA history blocks
 % for setup commands that are not covered by helpers.
 
-projectFile = fullfile(outputDir, "example_project.cst");
-invoke(mws, "SaveAs", projectFile, "True");
-fprintf("CST_PROJECT=%s\n", projectFile);
+projectFile = fullfile(outputDir, 'example_project.cst');
+invoke(mws, 'SaveAs', projectFile, 'True');
+fprintf('CST_PROJECT=%s\n', projectFile);
 ```
 
 Run an existing project separately. Pass the target project through an environment variable so agents can reuse the script without editing it:
@@ -65,20 +66,20 @@ Run an existing project separately. Pass the target project through an environme
 clc;
 clear;
 
-cstFile = string(getenv("CST_PROJECT_FILE"));
-if strlength(cstFile) == 0 || ~isfile(cstFile)
-    error("Set CST_PROJECT_FILE to an existing .cst project path.");
+cstFile = getenv('CST_PROJECT_FILE');
+if isempty(cstFile) || exist(cstFile, 'file') ~= 2
+    error('Set CST_PROJECT_FILE to an existing .cst project path.');
 end
 
-cst = actxserver("CSTStudio.Application");
-invoke(cst, "OpenFile", cstFile);
-mws = invoke(cst, "Active3D");
-solver = invoke(mws, "Solver");
+cst = actxserver('CSTStudio.Application');
+invoke(cst, 'OpenFile', cstFile);
+mws = invoke(cst, 'Active3D');
+solver = invoke(mws, 'Solver');
 
-fprintf("CST_SOLVER_START=%s\n", datestr(now, "yyyy-mm-dd HH:MM:SS"));
-invoke(solver, "Start");
-fprintf("CST_SOLVER_DONE=%s\n", datestr(now, "yyyy-mm-dd HH:MM:SS"));
-invoke(mws, "Save");
+fprintf('CST_SOLVER_START=%s\n', datestr(now, 'yyyy-mm-dd HH:MM:SS'));
+invoke(solver, 'Start');
+fprintf('CST_SOLVER_DONE=%s\n', datestr(now, 'yyyy-mm-dd HH:MM:SS'));
+invoke(mws, 'Save');
 release(solver);
 ```
 
@@ -86,6 +87,8 @@ release(solver);
 
 - Use Windows for CST COM automation. On non-Windows systems, generate scripts but do not claim they were executed through CST COM.
 - Use the exact COM ProgID that works in the target installation. Common variants are `CSTStudio.Application` and `CSTStudio.application`.
+- Optimize for broad version compatibility unless the user names a target release. Prefer MATLAB char arrays and `sprintf` over newer string-only idioms in shared examples, and probe command availability before relying on release-specific CST methods.
+- Do not claim a workflow supports all MATLAB/CST versions. Say which version was tested, which commands are conservative, and where a fallback may be needed.
 - Keep build and run scripts separate for long simulations. This prevents accidentally rebuilding and overwriting a project that CST still has open.
 - Prefer `AddToHistory` for durable CST state. Direct object `invoke` calls can be useful, but history commands make generated projects easier to inspect and replay.
 - Use quotes carefully in VBA strings. MATLAB string assembly bugs are common around CST enum values such as `"expanded open"`, `"unit cell"`, `"Efield"`, and `"Farfield"`.
@@ -97,6 +100,7 @@ release(solver);
 ## Reference Routing
 
 - Read [references/environment-and-execution.md](references/environment-and-execution.md) when setting up a machine, debugging COM startup, or deciding how to run MATLAB from an agent.
+- Read [references/version-compatibility.md](references/version-compatibility.md) when the user's MATLAB/CST versions are unknown, old, mixed across machines, or when generating a skill/example intended for public reuse.
 - Read [references/geometry-vba-patterns.md](references/geometry-vba-patterns.md) when creating materials, bricks, rotations, translations, arrays, or CST history helper functions.
 - Read [references/simulation-setup.md](references/simulation-setup.md) when defining boundaries, solver type, excitations, ports, monitors, or exports.
 - Read [references/tcstinterface.md](references/tcstinterface.md) when using the open-source `TCSTInterface` style workflow for existing CST projects, S/Z parameters, Touchstone, farfield, images, STL, or optimization cost functions.
@@ -104,4 +108,4 @@ release(solver);
 
 ## Final Response Expectations
 
-Report the generated files, the command used or prepared for MATLAB, whether the user approved solver execution, whether CST actually solved, the key warnings from `Result/Model.log`, and what data was exported. If solver execution was not run, say exactly which scripts/project files are ready to run and ask whether the user wants you to run the simulation now.
+Report the generated files, detected or assumed MATLAB/CST versions, the command used or prepared for MATLAB, whether the user approved solver execution, whether CST actually solved, the key warnings from `Result/Model.log`, and what data was exported. If solver execution was not run, say exactly which scripts/project files are ready to run and ask whether the user wants you to run the simulation now.

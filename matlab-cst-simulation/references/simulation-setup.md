@@ -5,8 +5,8 @@
 Set solver type explicitly. Example:
 
 ```matlab
-invoke(mws, "AddToHistory", "select time domain solver", ...
-    "ChangeSolverType ""HF Time Domain""");
+invoke(mws, 'AddToHistory', 'select time domain solver', ...
+    'ChangeSolverType "HF Time Domain"');
 ```
 
 Record solver choice in generated output notes. Time-domain, frequency-domain, eigenmode, and integral solvers differ in supported excitations and monitor behavior.
@@ -17,16 +17,15 @@ Define all six boundaries explicitly:
 
 ```matlab
 function defineBoundaries(mws, xmin, xmax, ymin, ymax, zmin, zmax)
-s = "";
-s = s + "With Boundary" + newline;
-s = s + ".Xmin """ + xmin + """" + newline;
-s = s + ".Xmax """ + xmax + """" + newline;
-s = s + ".Ymin """ + ymin + """" + newline;
-s = s + ".Ymax """ + ymax + """" + newline;
-s = s + ".Zmin """ + zmin + """" + newline;
-s = s + ".Zmax """ + zmax + """" + newline;
-s = s + "End With";
-invoke(mws, "AddToHistory", "define boundaries", char(s));
+s = sprintf(['With Boundary\n' ...
+    '.Xmin "%s"\n' ...
+    '.Xmax "%s"\n' ...
+    '.Ymin "%s"\n' ...
+    '.Ymax "%s"\n' ...
+    '.Zmin "%s"\n' ...
+    '.Zmax "%s"\n' ...
+    'End With'], xmin, xmax, ymin, ymax, zmin, zmax);
+invoke(mws, 'AddToHistory', 'define boundaries', s);
 end
 ```
 
@@ -38,14 +37,13 @@ Boundary choices are part of the physics, not boilerplate. Include a short comme
 
 ```matlab
 function addPlaneWave(mws, normalVec, eVec)
-s = "";
-s = s + "With PlaneWave" + newline;
-s = s + ".Reset" + newline;
-s = s + sprintf(".Normal ""%g"", ""%g"", ""%g""\n", normalVec(1), normalVec(2), normalVec(3));
-s = s + sprintf(".EVector ""%g"", ""%g"", ""%g""\n", eVec(1), eVec(2), eVec(3));
-s = s + ".Store" + newline;
-s = s + "End With";
-invoke(mws, "AddToHistory", "define plane wave", char(s));
+s = sprintf(['With PlaneWave\n' ...
+    '.Reset\n' ...
+    '.Normal "%g", "%g", "%g"\n' ...
+    '.EVector "%g", "%g", "%g"\n' ...
+    '.Store\n' ...
+    'End With'], normalVec(1), normalVec(2), normalVec(3), eVec(1), eVec(2), eVec(3));
+invoke(mws, 'AddToHistory', 'define plane wave', s);
 end
 ```
 
@@ -69,20 +67,19 @@ Frequency-domain field monitor pattern:
 
 ```matlab
 function addFrequencyMonitor(mws, fieldType, freqGHz)
-name = sprintf("%s_%gGHz", fieldType, freqGHz);
-s = "";
-s = s + "With Monitor" + newline;
-s = s + ".Reset" + newline;
-s = s + ".Name """ + name + """" + newline;
-if fieldType ~= "Farfield"
-    s = s + ".Dimension ""Volume""" + newline;
+name = sprintf('%s_%gGHz', fieldType, freqGHz);
+s = sprintf(['With Monitor\n' ...
+    '.Reset\n' ...
+    '.Name "%s"\n'], name);
+if ~strcmp(fieldType, 'Farfield')
+    s = [s sprintf('.Dimension "Volume"\n')];
 end
-s = s + ".Domain ""Frequency""" + newline;
-s = s + ".FieldType """ + fieldType + """" + newline;
-s = s + sprintf(".Frequency ""%g""\n", freqGHz);
-s = s + ".Create" + newline;
-s = s + "End With";
-invoke(mws, "AddToHistory", "define monitor: " + name, char(s));
+s = [s sprintf(['.Domain "Frequency"\n' ...
+    '.FieldType "%s"\n' ...
+    '.Frequency "%g"\n' ...
+    '.Create\n' ...
+    'End With'], fieldType, freqGHz)];
+invoke(mws, 'AddToHistory', sprintf('define monitor: %s', name), s);
 end
 ```
 

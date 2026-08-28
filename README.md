@@ -26,6 +26,7 @@ matlab-cst-simulation/
     geometry-vba-patterns.md
     simulation-setup.md
     tcstinterface.md
+    version-compatibility.md
     validation.md
   scripts/
     check-cst-project.ps1
@@ -44,6 +45,7 @@ matlab-cst-simulation/
 - A valid CST license
 
 The skill can still help generate scripts on non-Windows systems, but CST COM automation requires Windows.
+It is designed to probe versions and use conservative fallbacks where possible, but exact behavior still depends on the installed MATLAB release, CST release, solver modules, and license features.
 
 ## Installation
 
@@ -74,4 +76,3 @@ Use $matlab-cst-simulation to inspect this existing CST project, change two para
 ## Notes
 
 This skill does not bundle CST Studio Suite, MATLAB, CST official documentation, or third-party CST-MATLAB interface libraries. If you use external code such as `CSTMWS-Matlab-Interface`, follow its upstream license.
-

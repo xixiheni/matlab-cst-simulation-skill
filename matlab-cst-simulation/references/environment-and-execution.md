@@ -13,15 +13,15 @@
 In MATLAB, verify COM startup:
 
 ```matlab
-cst = actxserver("CSTStudio.Application");
-mws = invoke(cst, "NewMWS");
+cst = actxserver('CSTStudio.Application');
+mws = invoke(cst, 'NewMWS');
 disp(class(mws));
 ```
 
 If the ProgID fails, try the installation's documented ProgID casing or check Windows registry / CST repair registration. Agent-generated scripts should keep the ProgID in one variable near the top:
 
 ```matlab
-cstProgId = "CSTStudio.Application";
+cstProgId = 'CSTStudio.Application';
 cst = actxserver(cstProgId);
 ```
 
@@ -37,6 +37,12 @@ For portable instructions, write:
 
 ```powershell
 matlab -batch "run('C:\path\to\build_project.m')"
+```
+
+For older MATLAB releases that do not support `-batch`, provide a `-r` fallback:
+
+```powershell
+matlab -nosplash -nodesktop -r "try, run('C:\path\to\build_project.m'), catch ME, disp(getReport(ME)), exit(1), end, exit(0)"
 ```
 
 For scripts that operate on an existing project, pass the project path through an environment variable instead of hard-coding a local path:
