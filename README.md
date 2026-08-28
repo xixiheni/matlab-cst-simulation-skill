@@ -1,18 +1,58 @@
 # MATLAB CST Simulation Skill
 
+[![Skill](https://img.shields.io/badge/Codex%20Skill-matlab--cst--simulation-blue)](matlab-cst-simulation/SKILL.md)
+[![MATLAB](https://img.shields.io/badge/MATLAB-CST%20Automation-orange)](matlab-cst-simulation/examples)
+[![Platform](https://img.shields.io/badge/platform-Windows%20COM-lightgrey)](matlab-cst-simulation/references/environment-and-execution.md)
+
 A Codex/agent skill for automating CST Studio Suite simulations from MATLAB.
 
-This repository contains a reusable skill that helps coding agents create, run, inspect, and validate MATLAB scripts that control CST Studio Suite through Windows COM/ActiveX and CST VBA history commands.
+This repository contains a reusable skill that helps coding agents create, run, inspect, and validate MATLAB scripts that control CST Studio Suite through Windows COM/ActiveX and CST VBA history commands. It is aimed at agent-assisted electromagnetic simulation workflows such as antenna simulation, microwave engineering, periodic structures, FSS/metasurface studies, parameter sweeps, and CST result export.
+
+## Quick Start
+
+Install the skill folder into your local Codex skills directory:
+
+```powershell
+git clone https://github.com/xixiheni/matlab-cst-simulation-skill.git
+Copy-Item -Path .\matlab-cst-simulation-skill\matlab-cst-simulation `
+  -Destination "$env:USERPROFILE\.codex\skills\matlab-cst-simulation" `
+  -Recurse -Force
+```
+
+Then ask Codex or another compatible coding agent:
+
+```text
+Use $matlab-cst-simulation to create a MATLAB script that builds a CST patch antenna model, sets ports and monitors, prepares a run script, and asks me before starting the solver.
+```
+
+The skill is intentionally cautious: after modeling and simulation setup are complete, it asks for confirmation before launching a CST solver unless the user already gave explicit run permission.
 
 ## What This Skill Helps With
 
 - Create new CST projects from MATLAB.
 - Open and modify existing `.cst` projects.
 - Define units, frequency ranges, materials, geometry, boundaries, excitations, and monitors.
-- Run CST solvers from MATLAB.
+- Prepare and run CST solvers from MATLAB with explicit user confirmation before solver launch.
 - Export S-parameters, farfield data, field slices, images, or other result files.
 - Inspect CST-generated project files and solver logs.
 - Use `TCSTInterface`-style workflows for existing projects and result extraction.
+- Generate version-adaptive scripts that probe MATLAB/CST capabilities and fall back to conservative syntax when possible.
+
+## Why Use This Skill
+
+MATLAB-CST automation is powerful but fragile: small differences in CST releases, COM registration, MATLAB string syntax, solver names, boundary spellings, and result tree paths can break otherwise reasonable scripts. This skill gives agents a reusable operating guide for building scripts that are inspectable, repeatable, and honest about version assumptions.
+
+Useful search terms for this repository:
+
+```text
+MATLAB CST automation
+CST Studio Suite COM
+CST Microwave Studio MATLAB
+Codex skill MATLAB CST
+agent skill electromagnetic simulation
+antenna simulation MATLAB CST
+ActiveX COM automation CST
+```
 
 ## Repository Layout
 
@@ -63,6 +103,15 @@ The required entrypoint is:
 matlab-cst-simulation/SKILL.md
 ```
 
+For Codex skill installation from GitHub, the skill path is:
+
+```text
+xixiheni/matlab-cst-simulation-skill
+matlab-cst-simulation
+```
+
+For API or platform workflows that accept packaged skills, upload the `matlab-cst-simulation/` directory or a zip containing that directory.
+
 ## Example Use
 
 ```text
@@ -73,6 +122,51 @@ Use $matlab-cst-simulation to create a MATLAB script that builds a CST patch ant
 Use $matlab-cst-simulation to inspect this existing CST project, change two parameters, run a sweep, and export Touchstone files.
 ```
 
+## Version Compatibility
+
+The skill does not claim universal compatibility with every MATLAB and CST version. Instead, it uses a version-adaptive strategy:
+
+- Probe MATLAB, CST, COM/ActiveX, project open/save, and solver access before relying on version-sensitive commands.
+- Prefer MATLAB char arrays, `sprintf`, and `exist(path, 'file')` in public examples.
+- Prefer CST `AddToHistory` VBA command blocks for durable, inspectable model setup.
+- Report detected versions, assumptions, failed command blocks, and fallback options.
+
+See [version-compatibility.md](matlab-cst-simulation/references/version-compatibility.md).
+
+## Release
+
+Current public release target: `v0.1.0`.
+
+Suggested release title:
+
+```text
+Initial public release
+```
+
+Suggested release summary:
+
+```text
+First public release of matlab-cst-simulation, a Codex/agent skill for MATLAB-driven CST Studio Suite automation. Includes project generation guidance, solver-run confirmation, version-adaptive MATLAB/CST compatibility notes, validation scripts, and reusable examples.
+```
+
 ## Notes
 
 This skill does not bundle CST Studio Suite, MATLAB, CST official documentation, or third-party CST-MATLAB interface libraries. If you use external code such as `CSTMWS-Matlab-Interface`, follow its upstream license.
+
+## Suggested GitHub Topics
+
+```text
+codex-skill
+agent-skill
+matlab
+cst-studio-suite
+cst-microwave-studio
+matlab-cst
+simulation
+electromagnetic-simulation
+matlab-automation
+activex
+com-automation
+antenna-simulation
+microwave-engineering
+```
