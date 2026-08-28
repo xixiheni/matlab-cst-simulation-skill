@@ -4,9 +4,15 @@
 [![MATLAB](https://img.shields.io/badge/MATLAB-CST%20Automation-orange)](matlab-cst-simulation/examples)
 [![Platform](https://img.shields.io/badge/platform-Windows%20COM-lightgrey)](matlab-cst-simulation/references/environment-and-execution.md)
 
+![MATLAB CST Simulation Skill workflow](assets/workflow.png)
+
 A Codex/agent skill for automating CST Studio Suite simulations from MATLAB.
 
 This repository contains a reusable skill that helps coding agents create, run, inspect, and validate MATLAB scripts that control CST Studio Suite through Windows COM/ActiveX and CST VBA history commands. It is aimed at agent-assisted electromagnetic simulation workflows such as antenna simulation, microwave engineering, periodic structures, FSS/metasurface studies, parameter sweeps, and CST result export.
+
+## Example CST Model
+
+![Example CST model generated or inspected through MATLAB automation](assets/example.png)
 
 ## Quick Start
 
@@ -57,6 +63,8 @@ ActiveX COM automation CST
 ## Repository Layout
 
 ```text
+assets/
+  workflow.png
 matlab-cst-simulation/
   SKILL.md
   agents/
