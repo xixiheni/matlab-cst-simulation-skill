@@ -1,0 +1,7 @@
+interface:
+  display_name: "MATLAB CST Simulation"
+  short_description: "Automate CST Studio Suite from MATLAB"
+  default_prompt: "Use $matlab-cst-simulation to create a MATLAB script that builds, runs, and validates a CST simulation."
+
+policy:
+  allow_implicit_invocation: true
