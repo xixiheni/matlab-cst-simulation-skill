@@ -25,11 +25,12 @@ Use this skill to make MATLAB-driven CST work repeatable: create or open `.cst` 
 3. Generate a build script for the `.cst` project. Include units, frequency range, solver type, background, boundaries, materials, geometry, excitation, and monitors.
 4. Save the CST project under a new, descriptive filename. Avoid overwriting an open `.cst`.
 5. Generate a separate run script for solver execution when the solver may be slow or when `SaveAs` locking is likely.
-6. Run MATLAB non-interactively where possible, for example `matlab -batch "run('path/to/script.m')"`.
-7. Inspect generated CST files before solving: `Model/3D/Model.mod` for history/setup and `Model/3D/Model.dsn` for ports and design metadata.
-8. After solving, inspect `Result/Model.log` for solver start, frequency settings, boundaries, warnings, completion, mesh cells, and generated result files.
-9. Export data in agent-readable formats when possible: Touchstone, CSV/TXT ASCII field slices, images, or `.mat` files.
-10. Summarize uncertainty. CST warnings about boundaries, memory, port modes, monitor frequency, or farfield validity often mean "usable with caveats", not "failed".
+6. After modeling and simulation setup are complete, pause before starting any CST solver and ask the user once whether they want you to run the simulation now. Include the generated project path, run script or command, and any obvious time/licensing risk. Start the solver only after an affirmative reply, unless the user has already given explicit run permission for this exact project in the current request.
+7. Run MATLAB non-interactively where possible, for example `matlab -batch "run('path/to/script.m')"`.
+8. Inspect generated CST files before solving: `Model/3D/Model.mod` for history/setup and `Model/3D/Model.dsn` for ports and design metadata.
+9. After solving, inspect `Result/Model.log` for solver start, frequency settings, boundaries, warnings, completion, mesh cells, and generated result files.
+10. Export data in agent-readable formats when possible: Touchstone, CSV/TXT ASCII field slices, images, or `.mat` files.
+11. Summarize uncertainty. CST warnings about boundaries, memory, port modes, monitor frequency, or farfield validity often mean "usable with caveats", not "failed".
 
 ## MATLAB COM Skeleton
 
@@ -90,6 +91,7 @@ release(solver);
 - Use quotes carefully in VBA strings. MATLAB string assembly bugs are common around CST enum values such as `"expanded open"`, `"unit cell"`, `"Efield"`, and `"Farfield"`.
 - Do not treat farfield plots as authoritative when CST reports invalid farfield monitor conditions or periodic-boundary material mismatch. Report the warning and use near-field/port data where appropriate.
 - Store a short parameter note in the project history for generated projects: purpose, frequency band, units, solver, excitation, and script name.
+- Treat CST solver execution as an explicit user-approved action. When only project generation or setup was requested, finish by asking whether to run the prepared simulation instead of launching it silently.
 - When CST or MATLAB fails under a sandboxed agent, rerun with the user's approval in a normal desktop/host environment rather than rewriting the workflow around the sandbox.
 
 ## Reference Routing
@@ -102,4 +104,4 @@ release(solver);
 
 ## Final Response Expectations
 
-Report the generated files, the command used to run MATLAB, whether CST actually solved, the key warnings from `Result/Model.log`, and what data was exported. If solver execution was not run, say exactly which scripts/project files are ready to run.
+Report the generated files, the command used or prepared for MATLAB, whether the user approved solver execution, whether CST actually solved, the key warnings from `Result/Model.log`, and what data was exported. If solver execution was not run, say exactly which scripts/project files are ready to run and ask whether the user wants you to run the simulation now.
