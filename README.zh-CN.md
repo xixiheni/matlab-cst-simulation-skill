@@ -30,7 +30,15 @@
 
 ## 安装
 
-将仓库中的 `matlab-cst-simulation/` 文件夹复制到本机 Codex skills 目录：
+下面这段命令需要在 **Windows PowerShell** 中运行，不是在 GitHub 网页中运行。
+
+操作方式：
+
+1. 在 Windows 中打开 **PowerShell**。
+2. 复制下面整段命令。
+3. 粘贴到 PowerShell 窗口中并按回车。
+
+命令会将仓库中的 `matlab-cst-simulation/` 文件夹复制到本机 Codex skills 目录：
 
 ```powershell
 git clone https://github.com/xixiheni/matlab-cst-simulation-skill.git
@@ -39,14 +47,20 @@ Copy-Item -Path .\matlab-cst-simulation-skill\matlab-cst-simulation `
   -Recurse -Force
 ```
 
+运行完成后，skill 会被安装到：
+
+```text
+C:\Users\你的用户名\.codex\skills\matlab-cst-simulation
+```
+
 ## 使用示例
 
 ```text
-Use $matlab-cst-simulation to read this paper, ask me which figure or model I want to reproduce, extract the CST modeling parameters, write a reproduction plan, and then build the CST model after I confirm the plan.
+使用 $matlab-cst-simulation 读取这篇论文，先询问我要复现哪个图或模型，再提取 CST 建模参数，生成复现建模方案，并在我确认方案后建立 CST 模型。
 ```
 
 ```text
-Use $matlab-cst-simulation to create a MATLAB script that builds a CST antenna model, sets ports and monitors, prepares a run script, and asks me before starting the solver.
+使用 $matlab-cst-simulation 创建一个 MATLAB 脚本，用于建立 CST 天线模型、设置端口和监视器、准备仿真运行脚本，并在启动求解器前先征得我的确认。
 ```
 
 ## 注意事项
