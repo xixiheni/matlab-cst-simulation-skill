@@ -1,5 +1,7 @@
 # MATLAB CST Simulation Skill
 
+[简体中文说明](README.zh-CN.md)
+
 [![Skill](https://img.shields.io/badge/Codex%20Skill-matlab--cst--simulation-blue)](matlab-cst-simulation/SKILL.md)
 [![MATLAB](https://img.shields.io/badge/MATLAB-CST%20Automation-orange)](matlab-cst-simulation/examples)
 [![Platform](https://img.shields.io/badge/platform-Windows%20COM-lightgrey)](matlab-cst-simulation/references/environment-and-execution.md)
