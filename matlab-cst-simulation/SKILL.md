@@ -1,6 +1,6 @@
 ---
 name: matlab-cst-simulation
-description: Automate CST Studio Suite from MATLAB for electromagnetic simulation workflows. Use when creating or editing version-adaptive MATLAB scripts that drive CST through COM/ActiveX or generated VBA history commands, including building CST projects, editing parameters, defining units/materials/boundaries/excitations/monitors, running solvers, exporting S-parameters or fields, checking CST logs, or post-processing CST results. Do not use for pure MATLAB analysis with no CST automation.
+description: Automate CST Studio Suite from MATLAB for electromagnetic simulation workflows. Use when creating or editing version-adaptive MATLAB scripts that drive CST through COM/ActiveX or generated VBA history commands, including paper-to-model reproduction, building CST projects, editing parameters, defining units/materials/boundaries/excitations/monitors, running solvers, exporting S-parameters or fields, checking CST logs, or post-processing CST results. Do not use for pure MATLAB analysis with no CST automation.
 ---
 
 # MATLAB CST Simulation
@@ -13,25 +13,31 @@ Use this skill to make MATLAB-driven CST work repeatable across different instal
 
 - For a new CST model, generate a MATLAB build script that creates the project with `actxserver('CSTStudio.Application')`, `NewMWS`, and CST history commands.
 - For an existing CST project, use MATLAB to open the `.cst`, inspect/change parameters, run the solver, and export results.
+- For a paper, thesis, patent, or supplement that should be reproduced in CST, first identify the requested figure, table, device, or model. If the user only provides the document, ask which figure or model they want reproduced before detailed extraction. Then extract all modeling-critical information and write a detailed modeling-steps document before generating CST/MATLAB code. Read [references/paper-to-model-workflow.md](references/paper-to-model-workflow.md).
 - For unknown MATLAB or CST versions, generate conservative code that probes capabilities first, uses stable COM/VBA history patterns, and reports any fallback instead of assuming a specific release. Read [references/version-compatibility.md](references/version-compatibility.md).
 - For result reading and parameter sweeps, prefer a maintained MATLAB-CST interface class when the project already has results. Read [references/tcstinterface.md](references/tcstinterface.md).
 - For geometry construction, use small MATLAB helper functions that wrap CST objects or `AddToHistory` commands. Read [references/geometry-vba-patterns.md](references/geometry-vba-patterns.md).
 - For excitation, monitors, solver setup, and export commands, write explicit CST VBA history blocks from MATLAB. Read [references/simulation-setup.md](references/simulation-setup.md).
 - Before claiming success, inspect project files and solver logs. Use [scripts/check-cst-project.ps1](scripts/check-cst-project.ps1) and [scripts/parse-cst-log.ps1](scripts/parse-cst-log.ps1), or reproduce their checks manually.
+- When validating a new machine or a user's installation, run [scripts/probe-matlab-cst.ps1](scripts/probe-matlab-cst.ps1) or generate an equivalent probe before debugging generated modeling code.
 
 ## Core Workflow
 
+For paper-driven reproduction, do the paper-to-model workflow first: ask which figure/model/result to reproduce when the target is not already specified, extract parameters for that target, write the modeling-steps file, ask for missing critical values, then build from that approved plan.
+
 1. Establish the environment: confirm Windows, MATLAB, CST Studio Suite, CST COM registration, writable output directory, and expected CST version. When the versions are unknown, include a small diagnostic/probe step before generating version-sensitive commands.
 2. Keep sources and outputs separate. Copy templates or examples into a new output/work directory before modifying them.
-3. Generate a build script for the `.cst` project. Include units, frequency range, solver type, background, boundaries, materials, geometry, excitation, and monitors.
-4. Save the CST project under a new, descriptive filename. Avoid overwriting an open `.cst`.
-5. Generate a separate run script for solver execution when the solver may be slow or when `SaveAs` locking is likely.
-6. After modeling and simulation setup are complete, pause before starting any CST solver and ask the user once whether they want you to run the simulation now. Include the generated project path, run script or command, and any obvious time/licensing risk. Start the solver only after an affirmative reply, unless the user has already given explicit run permission for this exact project in the current request.
-7. Run MATLAB non-interactively where possible, for example `matlab -batch "run('path/to/script.m')"`.
-8. Inspect generated CST files before solving: `Model/3D/Model.mod` for history/setup and `Model/3D/Model.dsn` for ports and design metadata.
-9. After solving, inspect `Result/Model.log` for solver start, frequency settings, boundaries, warnings, completion, mesh cells, and generated result files.
-10. Export data in agent-readable formats when possible: Touchstone, CSV/TXT ASCII field slices, images, or `.mat` files.
-11. Summarize uncertainty. CST warnings about boundaries, memory, port modes, monitor frequency, or farfield validity often mean "usable with caveats", not "failed".
+3. When the task starts from a paper or supplement without a named target, pause after reading enough to orient yourself and ask which figure, table, device, model, or result the user wants to reproduce first.
+4. Generate or confirm a modeling-steps document before writing build code when the task starts from a paper, screenshot, CAD description, or incomplete specification.
+5. Generate a build script for the `.cst` project. Include units, frequency range, solver type, background, boundaries, materials, geometry, excitation, and monitors.
+6. Save the CST project under a new, descriptive filename. Avoid overwriting an open `.cst`.
+7. Generate a separate run script for solver execution when the solver may be slow or when `SaveAs` locking is likely.
+8. After modeling and simulation setup are complete, pause before starting any CST solver and ask the user once whether they want you to run the simulation now. Include the generated project path, run script or command, and any obvious time/licensing risk. Start the solver only after an affirmative reply, unless the user has already given explicit run permission for this exact project in the current request.
+9. Run MATLAB non-interactively where possible, for example `matlab -batch "run('path/to/script.m')"`.
+10. Inspect generated CST files before solving: `Model/3D/Model.mod` for history/setup and `Model/3D/Model.dsn` for ports and design metadata.
+11. After solving, inspect `Result/Model.log` for solver start, frequency settings, boundaries, warnings, completion, mesh cells, and generated result files.
+12. Export data in agent-readable formats when possible: Touchstone, CSV/TXT ASCII field slices, images, or `.mat` files.
+13. Summarize uncertainty. CST warnings about boundaries, memory, port modes, monitor frequency, or farfield validity often mean "usable with caveats", not "failed".
 
 ## MATLAB COM Skeleton
 
@@ -94,12 +100,16 @@ release(solver);
 - Use quotes carefully in VBA strings. MATLAB string assembly bugs are common around CST enum values such as `"expanded open"`, `"unit cell"`, `"Efield"`, and `"Farfield"`.
 - Do not treat farfield plots as authoritative when CST reports invalid farfield monitor conditions or periodic-boundary material mismatch. Report the warning and use near-field/port data where appropriate.
 - Store a short parameter note in the project history for generated projects: purpose, frequency band, units, solver, excitation, and script name.
+- For paper reproduction, keep a source-traceable parameter table. Mark each value as paper-derived, supplement-derived, inferred, user-provided, or assumed.
+- Use the parameter extraction and missing-question templates for paper-driven tasks so the build script can be traced back to the source document.
 - Treat CST solver execution as an explicit user-approved action. When only project generation or setup was requested, finish by asking whether to run the prepared simulation instead of launching it silently.
 - When CST or MATLAB fails under a sandboxed agent, rerun with the user's approval in a normal desktop/host environment rather than rewriting the workflow around the sandbox.
 
 ## Reference Routing
 
 - Read [references/environment-and-execution.md](references/environment-and-execution.md) when setting up a machine, debugging COM startup, or deciding how to run MATLAB from an agent.
+- Read [references/paper-to-model-workflow.md](references/paper-to-model-workflow.md) when the user provides a paper, supplement, figure, screenshot, or asks to reproduce a published CST/electromagnetic simulation.
+- Read [references/parameter-extraction-template.md](references/parameter-extraction-template.md) when extracting paper parameters, tracking missing values, or mapping source values into CST commands.
 - Read [references/version-compatibility.md](references/version-compatibility.md) when the user's MATLAB/CST versions are unknown, old, mixed across machines, or when generating a skill/example intended for public reuse.
 - Read [references/geometry-vba-patterns.md](references/geometry-vba-patterns.md) when creating materials, bricks, rotations, translations, arrays, or CST history helper functions.
 - Read [references/simulation-setup.md](references/simulation-setup.md) when defining boundaries, solver type, excitations, ports, monitors, or exports.
@@ -108,4 +118,4 @@ release(solver);
 
 ## Final Response Expectations
 
-Report the generated files, detected or assumed MATLAB/CST versions, the command used or prepared for MATLAB, whether the user approved solver execution, whether CST actually solved, the key warnings from `Result/Model.log`, and what data was exported. If solver execution was not run, say exactly which scripts/project files are ready to run and ask whether the user wants you to run the simulation now.
+Report the generated files, detected or assumed MATLAB/CST versions, the modeling-steps document used when applicable, the command used or prepared for MATLAB, whether the user approved solver execution, whether CST actually solved, the key warnings from `Result/Model.log`, and what data was exported. If solver execution was not run, say exactly which scripts/project files are ready to run and ask whether the user wants you to run the simulation now.

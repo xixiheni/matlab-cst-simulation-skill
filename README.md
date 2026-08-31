@@ -4,7 +4,7 @@
 [![MATLAB](https://img.shields.io/badge/MATLAB-CST%20Automation-orange)](matlab-cst-simulation/examples)
 [![Platform](https://img.shields.io/badge/platform-Windows%20COM-lightgrey)](matlab-cst-simulation/references/environment-and-execution.md)
 
-![MATLAB CST Simulation Skill workflow](assets/workflow.png)
+![MATLAB CST Simulation Skill workflow](assets/workflow.svg)
 
 A Codex/agent skill for automating CST Studio Suite simulations from MATLAB.
 
@@ -31,16 +31,24 @@ Then ask Codex or another compatible coding agent:
 Use $matlab-cst-simulation to create a MATLAB script that builds a CST patch antenna model, sets ports and monitors, prepares a run script, and asks me before starting the solver.
 ```
 
+Or start from a paper:
+
+```text
+Use $matlab-cst-simulation to read this paper, ask me which figure or model I want to reproduce, extract all CST modeling parameters for that target, write a detailed reproduction plan, ask me for missing critical values, and then build the CST model from the confirmed plan.
+```
+
 The skill is intentionally cautious: after modeling and simulation setup are complete, it asks for confirmation before launching a CST solver unless the user already gave explicit run permission.
 
 ## What This Skill Helps With
 
 - Create new CST projects from MATLAB.
+- Turn a paper or supplementary material into a source-traceable CST modeling plan before coding.
 - Open and modify existing `.cst` projects.
 - Define units, frequency ranges, materials, geometry, boundaries, excitations, and monitors.
 - Prepare and run CST solvers from MATLAB with explicit user confirmation before solver launch.
 - Export S-parameters, farfield data, field slices, images, or other result files.
 - Inspect CST-generated project files and solver logs.
+- Probe MATLAB/CST installation health before debugging generated code.
 - Use `TCSTInterface`-style workflows for existing projects and result extraction.
 - Generate version-adaptive scripts that probe MATLAB/CST capabilities and fall back to conservative syntax when possible.
 
@@ -64,7 +72,9 @@ ActiveX COM automation CST
 
 ```text
 assets/
+  workflow.svg
   workflow.png
+  example.png
 matlab-cst-simulation/
   SKILL.md
   agents/
@@ -72,6 +82,8 @@ matlab-cst-simulation/
   references/
     environment-and-execution.md
     geometry-vba-patterns.md
+    parameter-extraction-template.md
+    paper-to-model-workflow.md
     simulation-setup.md
     tcstinterface.md
     version-compatibility.md
@@ -79,6 +91,7 @@ matlab-cst-simulation/
   scripts/
     check-cst-project.ps1
     parse-cst-log.ps1
+    probe-matlab-cst.ps1
   examples/
     build-basic-plane-wave-project.m
     run-existing-project.m
@@ -130,6 +143,10 @@ Use $matlab-cst-simulation to create a MATLAB script that builds a CST patch ant
 Use $matlab-cst-simulation to inspect this existing CST project, change two parameters, run a sweep, and export Touchstone files.
 ```
 
+```text
+Use $matlab-cst-simulation to reproduce Figure 4 from this paper. First write the modeling-steps document, identify missing parameters, then generate the MATLAB/CST build script.
+```
+
 ## Version Compatibility
 
 The skill does not claim universal compatibility with every MATLAB and CST version. Instead, it uses a version-adaptive strategy:
@@ -140,6 +157,14 @@ The skill does not claim universal compatibility with every MATLAB and CST versi
 - Report detected versions, assumptions, failed command blocks, and fallback options.
 
 See [version-compatibility.md](matlab-cst-simulation/references/version-compatibility.md).
+
+Run the environment probe before blaming a generated script:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\matlab-cst-simulation\scripts\probe-matlab-cst.ps1
+```
+
+For paper reproduction, use the source-traceable parameter table in [parameter-extraction-template.md](matlab-cst-simulation/references/parameter-extraction-template.md).
 
 ## Release
 
@@ -154,7 +179,7 @@ Initial public release
 Suggested release summary:
 
 ```text
-First public release of matlab-cst-simulation, a Codex/agent skill for MATLAB-driven CST Studio Suite automation. Includes project generation guidance, solver-run confirmation, version-adaptive MATLAB/CST compatibility notes, validation scripts, and reusable examples.
+First public release of matlab-cst-simulation, a Codex/agent skill for MATLAB-driven CST Studio Suite automation. Includes project generation guidance, paper-to-model reproduction planning, parameter extraction templates, environment probing, solver-run confirmation, version-adaptive MATLAB/CST compatibility notes, validation scripts, and reusable examples.
 ```
 
 ## Notes
