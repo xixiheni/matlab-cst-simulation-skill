@@ -60,9 +60,9 @@
     <text x="660" y="605" class="box-text">geometry, setup saved</text>
 
     <rect class="box" x="972" y="496" width="250" height="136" fill="#f6f0e8" stroke="#b58a54"/>
-    <text x="996" y="541" class="box-title">Ask before solver</text>
-    <text x="996" y="577" class="box-text">Run now only after</text>
-    <text x="996" y="605" class="box-text">explicit approval</text>
+    <text x="996" y="541" class="box-title">Solver decision</text>
+    <text x="996" y="577" class="box-text">Run if requested,</text>
+    <text x="996" y="605" class="box-text">or ask first</text>
 
     <rect class="box" x="1308" y="496" width="160" height="136" fill="#edf2ff" stroke="#6d86ce"/>
     <text x="1330" y="541" class="box-title">Results</text>
@@ -84,7 +84,7 @@
   <circle cx="682" cy="722" r="5" fill="#ffffff"/>
   <text x="704" y="729" class="label">missing critical values before build</text>
   <circle cx="1038" cy="722" r="5" fill="#ffffff"/>
-  <text x="1060" y="729" class="label">user confirmation before solver launch</text>
+  <text x="1060" y="729" class="label">explicit request or confirmation before solver</text>
 
   <text x="90" y="835" class="note">Designed for repeatable MATLAB scripts that drive CST Studio Suite through Windows COM/ActiveX and durable VBA history commands.</text>
 </svg>
