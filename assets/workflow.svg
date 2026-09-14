@@ -1,90 +1,102 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
-  <title id="title">MATLAB CST Simulation Skill workflow</title>
-  <desc id="desc">A workflow from paper input, target selection, parameter extraction, modeling plan, MATLAB automation, CST model generation, solver confirmation, and result export.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="760" viewBox="0 0 1600 760" role="img" aria-labelledby="title desc">
+  <title id="title">MATLAB CST Simulation Skill 中文流程图</title>
+  <desc id="desc">从论文输入、目标确认、环境检查和参数提取，到建模步骤、MATLAB 控制 CST 建模、模型检查、仿真与论文结果对比的简化流程。</desc>
   <defs>
     <style>
-      .bg { fill: #f7fafc; }
-      .title { font: 700 44px Arial, Helvetica, sans-serif; fill: #172033; }
-      .subtitle { font: 400 24px Arial, Helvetica, sans-serif; fill: #4f5f76; }
-      .box-title { font: 700 25px Arial, Helvetica, sans-serif; fill: #172033; }
-      .box-text { font: 400 19px Arial, Helvetica, sans-serif; fill: #435168; }
-      .label { font: 700 18px Arial, Helvetica, sans-serif; fill: #ffffff; }
-      .note { font: 400 18px Arial, Helvetica, sans-serif; fill: #5c6b80; }
-      .box { stroke-width: 2.5; rx: 20; ry: 20; }
-      .arrow { fill: none; stroke: #435168; stroke-width: 3.2; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow); }
-      .soft { opacity: 0.96; }
+      .bg { fill: #f6f8fb; }
+      .panel { fill: #ffffff; stroke: #dbe3ee; stroke-width: 2; }
+      .title { font: 700 43px "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif; fill: #172033; }
+      .subtitle { font: 400 22px "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif; fill: #59687d; }
+      .step-no { font: 700 17px Arial, sans-serif; fill: #ffffff; text-anchor: middle; }
+      .step-title { font: 700 25px "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif; fill: #172033; }
+      .step-text { font: 400 18px "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif; fill: #46556b; }
+      .note { font: 400 17px "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif; fill: #e8eef7; }
+      .note-strong { font: 700 17px "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif; fill: #ffffff; }
+      .box { stroke-width: 2.3; rx: 16; ry: 16; }
+      .arrow { fill: none; stroke: #46556b; stroke-width: 3.2; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow); }
     </style>
     <marker id="arrow" markerWidth="12" markerHeight="12" refX="9" refY="6" orient="auto">
-      <path d="M2,2 L10,6 L2,10 Z" fill="#435168"/>
+      <path d="M2,2 L10,6 L2,10 Z" fill="#46556b"/>
     </marker>
     <filter id="shadow" x="-15%" y="-20%" width="130%" height="150%">
-      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#1b2a42" flood-opacity="0.12"/>
+      <feDropShadow dx="0" dy="7" stdDeviation="10" flood-color="#1b2a42" flood-opacity="0.11"/>
     </filter>
   </defs>
 
-  <rect class="bg" width="1600" height="900"/>
-  <text x="88" y="82" class="title">MATLAB CST Simulation Skill</text>
-  <text x="90" y="124" class="subtitle">Paper-to-model workflow for agent-assisted CST reproduction</text>
+  <rect class="bg" width="1600" height="760"/>
+  <text x="80" y="70" class="title">MATLAB CST Simulation Skill</text>
+  <text x="82" y="108" class="subtitle">从论文到 CST 模型、仿真结果与论文对比</text>
 
-  <rect x="88" y="164" width="1424" height="620" rx="32" fill="#ffffff" stroke="#dce4ef" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="70" y="142" width="1460" height="512" rx="28" class="panel" filter="url(#shadow)"/>
 
-  <g class="soft">
-    <rect class="box" x="132" y="238" width="250" height="136" fill="#eaf4ff" stroke="#70a8e5"/>
-    <text x="156" y="283" class="box-title">Paper or supplement</text>
-    <text x="156" y="319" class="box-text">Read figures, captions,</text>
-    <text x="156" y="347" class="box-text">tables, equations, notes</text>
+  <!-- 第一行 -->
+  <rect class="box" x="105" y="205" width="270" height="130" fill="#eaf4ff" stroke="#69a2df"/>
+  <circle cx="137" cy="235" r="18" fill="#347fca"/>
+  <text x="137" y="241" class="step-no">1</text>
+  <text x="166" y="244" class="step-title">放入论文</text>
+  <text x="128" y="282" class="step-text">读取论文、补充材料和图表</text>
+  <text x="128" y="310" class="step-text">识别可复现的模型与结果</text>
 
-    <rect class="box" x="468" y="238" width="250" height="136" fill="#fff4df" stroke="#dfa742"/>
-    <text x="492" y="283" class="box-title">Ask target first</text>
-    <text x="492" y="319" class="box-text">Which figure, table,</text>
-    <text x="492" y="347" class="box-text">model, or result?</text>
+  <rect class="box" x="475" y="205" width="270" height="130" fill="#fff4df" stroke="#dda23e"/>
+  <circle cx="507" cy="235" r="18" fill="#c98516"/>
+  <text x="507" y="241" class="step-no">2</text>
+  <text x="536" y="244" class="step-title">确认复现目标</text>
+  <text x="498" y="282" class="step-text">明确要复现的图、表或模型</text>
+  <text x="498" y="310" class="step-text">用户未指定时再集中询问</text>
 
-    <rect class="box" x="804" y="238" width="250" height="136" fill="#e9f8ef" stroke="#66b982"/>
-    <text x="828" y="283" class="box-title">Extract parameters</text>
-    <text x="828" y="319" class="box-text">Geometry, materials,</text>
-    <text x="828" y="347" class="box-text">solver, ports, monitors</text>
+  <rect class="box" x="845" y="205" width="270" height="130" fill="#eef7f7" stroke="#50aaa7"/>
+  <circle cx="877" cy="235" r="18" fill="#278e8b"/>
+  <text x="877" y="241" class="step-no">3</text>
+  <text x="906" y="244" class="step-title">检查运行环境</text>
+  <text x="868" y="282" class="step-text">检测 MATLAB、CST 和 COM</text>
+  <text x="868" y="310" class="step-text">确认版本、许可与输出目录</text>
 
-    <rect class="box" x="1140" y="238" width="250" height="136" fill="#f0ecff" stroke="#8e77d8"/>
-    <text x="1164" y="283" class="box-title">Modeling plan</text>
-    <text x="1164" y="319" class="box-text">Trace sources, assumptions,</text>
-    <text x="1164" y="347" class="box-text">missing values, steps</text>
+  <rect class="box" x="1215" y="205" width="270" height="130" fill="#e9f8ef" stroke="#5fb47c"/>
+  <circle cx="1247" cy="235" r="18" fill="#3a9960"/>
+  <text x="1247" y="241" class="step-no">4</text>
+  <text x="1276" y="244" class="step-title">提取建模参数</text>
+  <text x="1238" y="282" class="step-text">匹配正确的论文模型版本</text>
+  <text x="1238" y="310" class="step-text">记录参数来源、状态和缺失项</text>
 
-    <rect class="box" x="300" y="496" width="250" height="136" fill="#eef7f7" stroke="#5bb3b0"/>
-    <text x="324" y="541" class="box-title">MATLAB automation</text>
-    <text x="324" y="577" class="box-text">Version probe, COM,</text>
-    <text x="324" y="605" class="box-text">CST VBA history</text>
+  <path class="arrow" d="M375 270 H463"/>
+  <path class="arrow" d="M745 270 H833"/>
+  <path class="arrow" d="M1115 270 H1203"/>
 
-    <rect class="box" x="636" y="496" width="250" height="136" fill="#fff0ee" stroke="#d67868"/>
-    <text x="660" y="541" class="box-title">CST model built</text>
-    <text x="660" y="577" class="box-text">Units, boundaries,</text>
-    <text x="660" y="605" class="box-text">geometry, setup saved</text>
+  <!-- 第二行 -->
+  <rect class="box" x="105" y="445" width="270" height="130" fill="#f0ecff" stroke="#8972d3"/>
+  <circle cx="137" cy="475" r="18" fill="#7055c4"/>
+  <text x="137" y="481" class="step-no">5</text>
+  <text x="166" y="484" class="step-title">生成建模步骤</text>
+  <text x="128" y="522" class="step-text">写清坐标、材料、边界和激励</text>
+  <text x="128" y="550" class="step-text">关键参数缺失时询问用户</text>
 
-    <rect class="box" x="972" y="496" width="250" height="136" fill="#f6f0e8" stroke="#b58a54"/>
-    <text x="996" y="541" class="box-title">Solver decision</text>
-    <text x="996" y="577" class="box-text">Run if requested,</text>
-    <text x="996" y="605" class="box-text">or ask first</text>
+  <rect class="box" x="475" y="445" width="270" height="130" fill="#fff0ee" stroke="#d67263"/>
+  <circle cx="507" cy="475" r="18" fill="#c85f50"/>
+  <text x="507" y="481" class="step-no">6</text>
+  <text x="536" y="484" class="step-title">控制 CST 建模</text>
+  <text x="498" y="522" class="step-text">生成脚本并自动建立工程</text>
+  <text x="498" y="550" class="step-text">完成几何和全部仿真设置</text>
 
-    <rect class="box" x="1308" y="496" width="160" height="136" fill="#edf2ff" stroke="#6d86ce"/>
-    <text x="1330" y="541" class="box-title">Results</text>
-    <text x="1330" y="577" class="box-text">Logs, fields,</text>
-    <text x="1330" y="605" class="box-text">S-params</text>
-  </g>
+  <rect class="box" x="845" y="445" width="270" height="130" fill="#eaf4ff" stroke="#69a2df"/>
+  <circle cx="877" cy="475" r="18" fill="#347fca"/>
+  <text x="877" y="481" class="step-no">7</text>
+  <text x="906" y="484" class="step-title">检查 CST 模型</text>
+  <text x="868" y="522" class="step-text">核对尺寸、位置、材料和端口</text>
+  <text x="868" y="550" class="step-text">确认模型与建模步骤一致</text>
 
-  <path class="arrow" d="M382 306 H456"/>
-  <path class="arrow" d="M718 306 H792"/>
-  <path class="arrow" d="M1054 306 H1128"/>
-  <path class="arrow" d="M1265 374 C1265 438 425 428 425 484"/>
-  <path class="arrow" d="M550 564 H624"/>
-  <path class="arrow" d="M886 564 H960"/>
-  <path class="arrow" d="M1222 564 H1296"/>
+  <rect class="box" x="1215" y="445" width="270" height="130" fill="#edf2ff" stroke="#697fc7"/>
+  <circle cx="1247" cy="475" r="18" fill="#526ebf"/>
+  <text x="1247" y="481" class="step-no">8</text>
+  <text x="1276" y="484" class="step-title">仿真与结果对比</text>
+  <text x="1238" y="522" class="step-text">按用户请求决定是否运行</text>
+  <text x="1238" y="550" class="step-text">导出结果并与论文目标比较</text>
 
-  <rect x="110" y="700" width="1380" height="44" rx="22" fill="#172033"/>
-  <text x="145" y="729" class="label">Key safety checkpoints:</text>
-  <text x="364" y="729" class="label">target selection before extraction</text>
-  <circle cx="682" cy="722" r="5" fill="#ffffff"/>
-  <text x="704" y="729" class="label">missing critical values before build</text>
-  <circle cx="1038" cy="722" r="5" fill="#ffffff"/>
-  <text x="1060" y="729" class="label">explicit request or confirmation before solver</text>
+  <path class="arrow" d="M1350 335 V385 H240 V433"/>
+  <path class="arrow" d="M375 510 H463"/>
+  <path class="arrow" d="M745 510 H833"/>
+  <path class="arrow" d="M1115 510 H1203"/>
 
-  <text x="90" y="835" class="note">Designed for repeatable MATLAB scripts that drive CST Studio Suite through Windows COM/ActiveX and durable VBA history commands.</text>
+  <rect x="92" y="679" width="1416" height="50" rx="17" fill="#172033"/>
+  <text x="120" y="710" class="note-strong">核心规则：</text>
+  <text x="220" y="710" class="note">只询问影响结果的关键缺失参数；完整复现可在检查后运行仿真，仅建模则运行前询问。</text>
 </svg>
