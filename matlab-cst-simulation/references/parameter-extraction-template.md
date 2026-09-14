@@ -7,10 +7,10 @@ Keep the table source-traceable. Do not hide guessed or inferred values in code.
 ## Parameter Table
 
 ```markdown
-| Parameter ID | Value | Unit | Source | Confidence | Used in CST | Notes |
+| Parameter ID | Value | Unit | Source | Status | Used in CST | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| freq_center | 12 | GHz | paper caption | high | Solver.FrequencyRange, monitors | Example only |
-| substrate_eps_r | TBD | 1 | missing | blocking | Material definition | Ask user before build |
+| freq_center | 12 | GHz | paper caption | confirmed | Solver.FrequencyRange, monitors | Example only |
+| substrate_eps_r | TBD | 1 | not reported | missing | Material definition | Ask user before build |
 ```
 
 Recommended `Source` values:
@@ -25,17 +25,19 @@ figure-estimated
 inferred
 user-provided
 assumed
+not reported
+```
+
+Recommended `Status` values:
+
+```text
+confirmed
+estimated
+assumed
 missing
 ```
 
-Recommended `Confidence` values:
-
-```text
-high
-medium
-low
-blocking
-```
+Keep `Source` and `Status` separate: `Source` says where the value came from, and `Status` says how reliable/actionable it is.
 
 Use stable parameter IDs that can become MATLAB variable names:
 
@@ -57,7 +59,7 @@ monitor_field_component
 ## Missing-Parameter Question Table
 
 ```markdown
-| Question ID | Missing item | Why it matters | Proposed fallback | Blocks build? | User answer |
+| Question ID | Missing item | Why it matters | Proposed fallback | Need user before build? | User answer |
 | --- | --- | --- | --- | --- | --- |
 | q001 | substrate permittivity | Changes resonance and wave velocity | Use eps_r = 2.2 only for a rough geometry test | yes |  |
 ```
@@ -65,9 +67,9 @@ monitor_field_component
 ## Source Evidence Table
 
 ```markdown
-| Evidence ID | Location in source | Extracted fact | Interpretation | Confidence |
+| Evidence ID | Location in source | Extracted fact | Interpretation | Status |
 | --- | --- | --- | --- | --- |
-| e001 | Fig. 2 caption | Unit cell period is 4.8 mm | Use p = 4.8 mm along x | high |
+| e001 | Fig. 2 caption | Unit cell period is 4.8 mm | Use p = 4.8 mm along x | confirmed |
 ```
 
 ## CST Mapping Table
@@ -86,3 +88,5 @@ monitor_field_component
 - If a formula generates a parameter table, save that derived table as CSV and reference it from the modeling plan.
 - Distinguish first-pass approximations from final reproduction values.
 - Use `TBD` only for values that must be answered before build or solver execution.
+- Do not put result-sensitive numeric constants directly in MATLAB code unless they appear in this table or are derived by a formula cited here.
+- Do not replace a paper-specified value just because CST API commands are easier with a different physical setup.

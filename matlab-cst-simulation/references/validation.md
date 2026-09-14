@@ -8,6 +8,8 @@ Inspect the generated CST project directory when available:
 - `Model/3D/Model.dsn`: ports, labels, design metadata.
 - Project folder name matching the `.cst` file stem.
 - Expected generated scripts and exported parameter tables.
+- Major objects, dimensions, layer positions, materials, boundaries, ports/excitations, monitors, and output paths matching the modeling plan.
+- Boolean operations such as subtract, unite, intersect, mirror, rotate, and array actually represented in the CST history.
 
 Use:
 
@@ -68,6 +70,35 @@ For electromagnetic structures, add at least one task-specific sanity check:
 - Farfield main lobe direction only when boundary/setup warnings allow it.
 - Mesh cell count and runtime within plausible range for the model size.
 - Comparison against a known small model, literature value, or previous run when available.
+
+## Paper Target Comparison
+
+For paper-driven reproduction, do not stop at `Solver Finished`. Compare the exported result with the user's requested paper target at the feature level:
+
+- S-parameters: resonance location, minimum/maximum level, bandwidth, main trend, and secondary resonances when relevant.
+- Farfield: main beam direction, peak gain/directivity/realized gain definition, beam shape, and major sidelobes.
+- Near field: requested field component, concentration region, maximum location, and main distribution.
+- Metasurface/FSS: transmission/reflection resonance, phase, amplitude, and polarization convention.
+- Eigenmode: mode frequency, order, and field distribution.
+
+When only a plotted figure is available, approximate comparison of visible features is acceptable. Do not require a full digitization pipeline unless the user asks for it.
+
+## Mismatch Debug Order
+
+When the CST result clearly disagrees with the paper, investigate in this order before tuning paper dimensions:
+
+1. Wrong paper model version or parameter case.
+2. Parameter extraction error.
+3. Unit or coordinate-system error.
+4. Geometry, layer, Boolean, rotation, mirror, or array error.
+5. Material definition error.
+6. Port or excitation definition error.
+7. Boundary or air-space error.
+8. Solver mismatch.
+9. Mesh too coarse for critical features.
+10. Result definition or post-processing mismatch.
+
+Change only the specific issue found. Avoid changing several physics settings at once, because that makes the reproduction harder to diagnose.
 
 ## Final Reporting
 
